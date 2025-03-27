@@ -7,7 +7,7 @@ on:
     inputs:
       sqlite_tag:
         description: 'SQLite source tree tag'
-        default: 'version-3.44.0'
+        default: 'version-3.47.0'
         required: true
         type: string
 
@@ -19,7 +19,7 @@ on:
 
       make_args:
         description: 'make arguments'
-        default: ''
+        default: 'version-3.47.0'
         required: false
         type: string
         
