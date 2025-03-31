@@ -19,7 +19,7 @@ on:
 
       make_args:
         description: 'make arguments'
-        default: ''
+        default: 'SQLITE_VERSION=`version-3.44.0`'
         required: false
         type: string
         
