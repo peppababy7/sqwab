@@ -1,13 +1,13 @@
 # This is a basic workflow that is manually triggered
 
-name: SQLite workflow
+name: wa-sqlite workflow
 
 on:
   workflow_dispatch:
     inputs:
-      source_url:
-        description: 'Source tarball URL'
-        default: 'https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=release'
+      sqlite_tag:
+        description: 'SQLite source tree tag'
+        default: 'version-3.47.0'
         required: true
         type: string
 
@@ -17,6 +17,12 @@ on:
         required: true
         type: string
 
+      make_args:
+        description: 'make arguments'
+        default: ''
+        required: false
+        type: string
+        
 env:
   EM_CACHE_FOLDER: 'emsdk-cache'
   GH_TOKEN: ${{ github.token }}
@@ -28,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        sparse-checkout: overlay.sqlite
+        sparse-checkout: overlay.wa-sqlite
     
     # Install EMSDK
     - name: Setup Emscripten
@@ -43,24 +49,25 @@ jobs:
         actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
     - run: emcc -v
 
-    # Unpack tarball
-    - name: Unpack tarball
-      run: curl ${{inputs.source_url}} | tar xzf -
+    # Check out wa-sqlite
+    - name: Check out wa-sqlite
+      run: git clone https://github.com/rhashimoto/wa-sqlite.git
 
-    # Overlay files onto SQLite tree
-    - run: tar -C overlay.sqlite -cf - . | tar -C sqlite -xvf -
+    # Overlay files.
+    - run: tar -C overlay.wa-sqlite -cf - . | tar -C wa-sqlite -xvf -
     
     # Build
-    - name: Build amalgamation
-      working-directory: ./sqlite
-      run: ./configure --enable-all && make sqlite3.c
-    - name: Build wasm
-      working-directory: ./sqlite/ext/wasm
-      run: make dist
+    - name: Build wa-sqlite
+      working-directory: ./wa-sqlite
+      run: |
+        make ${{inputs.make_args}}
+        (cd dist; tar czf ../wa-sqlite.dist.tgz .)
 
     # Package
-    - name: Create release with tarball
+    - name: Create release
       run: |
-        echo "SQLite ${{inputs.source_url}}" >> NOTES
+        echo "wa-sqlite build `date`" >> NOTES
+        echo "SQLite ${{inputs.sqlite_tag}}" >> NOTES
         echo "EMSDK ${{inputs.em_version}}" >> NOTES
-        gh release create "v`date +%s`" sqlite/ext/wasm/*.zip --generate-notes --notes-file NOTES
+        echo "${{inputs.make_args}}" >> NOTES
+        gh release create "v`date +%s`" wa-sqlite/*.tgz --generate-notes --notes-file NOTES
