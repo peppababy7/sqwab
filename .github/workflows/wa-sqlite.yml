@@ -53,9 +53,6 @@ jobs:
     - name: Check out wa-sqlite
       run: git clone https://github.com/rhashimoto/wa-sqlite.git
 
-    - name: Unpack tarball
-      run: curl ${https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=version-3.47.0 | tar xzf -
-
     # Overlay files.
     - run: tar -C overlay.wa-sqlite -cf - . | tar -C wa-sqlite -xvf -
     
