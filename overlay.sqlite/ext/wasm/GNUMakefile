@@ -36,7 +36,7 @@
 # - wasm-strip for release builds: https://github.com/WebAssembly/wabt
 # - InfoZip for 'dist' zip file
 ########################################################################
-default: dist dist.build=o1
+default: dist.build=o1
 #default: dist.build=o1
 SHELL := $(firstword $(wildcard /usr/local/bin/bash /usr/bin/bash /bin/bash))
 ifeq (,$(SHELL))
@@ -469,6 +469,7 @@ ifeq (,$(filter $(OPTIMIZED_TARGETS),$(MAKECMDGOALS)))
 else
   emcc_opt ?= -Oz
 endif
+emcc_opt ?= -O1
 
 # When passing emcc_opt from the CLI, += and re-assignment have no
 # effect, so emcc_opt+=-g3 doesn't work. So...
