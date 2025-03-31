@@ -36,7 +36,7 @@
 # - wasm-strip for release builds: https://github.com/WebAssembly/wabt
 # - InfoZip for 'dist' zip file
 ########################################################################
-default: dist.build=o1
+default: dist
 #default: dist.build=o1
 SHELL := $(firstword $(wildcard /usr/local/bin/bash /usr/bin/bash /bin/bash))
 ifeq (,$(SHELL))
@@ -46,6 +46,7 @@ MAKEFILE := $(lastword $(MAKEFILE_LIST))
 CLEAN_FILES :=
 DISTCLEAN_FILES :=
 MAKING_CLEAN := $(if $(filter %clean,$(MAKECMDGOALS)),1,0)
+dist.build=o1
 .PHONY: clean distclean
 clean:
 	-rm -f $(CLEAN_FILES)
