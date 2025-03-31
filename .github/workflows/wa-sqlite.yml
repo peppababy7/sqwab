@@ -7,7 +7,7 @@ on:
     inputs:
       sqlite_tag:
         description: 'SQLite source tree tag'
-        default: 'version-3.47.0'
+        default: 'https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=version-3.47.0'
         required: true
         type: string
 
@@ -52,6 +52,9 @@ jobs:
     # Check out wa-sqlite
     - name: Check out wa-sqlite
       run: git clone https://github.com/rhashimoto/wa-sqlite.git
+
+    - name: Unpack tarball
+      run: curl ${{inputs.sqlite_tag}} | tar xzf -
 
     # Overlay files.
     - run: tar -C overlay.wa-sqlite -cf - . | tar -C wa-sqlite -xvf -
