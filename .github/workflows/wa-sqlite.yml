@@ -19,7 +19,7 @@ on:
 
       make_args:
         description: 'make arguments'
-        default: 'version-3.47.0'
+        default: ''
         required: false
         type: string
         
